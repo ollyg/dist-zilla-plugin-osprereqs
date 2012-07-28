@@ -16,7 +16,7 @@ $tzil->build;
 
 my $contents = $tzil->slurp_file('build/Makefile.PL');
 
-my $conditional = q|if ( $^O eq 'MSWin32' ) {|;
+my $conditional = q|if ( $^O =~ m/MSWin32/ ) {|;
 my $prereq = q|$WriteMakefileArgs{PREREQ_PM}{'Win32API::File'} = '0.11'|;
 
 like($contents, qr/\Q$conditional\E.*?\Q$prereq\E.*?^\}/ms, "saw MSWin32 conditional");
