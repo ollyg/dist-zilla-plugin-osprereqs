@@ -79,7 +79,7 @@ sub setup_installer {
 
   my $content = $makefile->content;
 
-  my $prereq_str = "if ( \$^O eq '$os' ) {\n";
+  my $prereq_str = "if ( \$^O =~ m/$os/ ) {\n";
   my $prereq_hash = $self->_prereq;
   for my $k ( sort keys %$prereq_hash ) {
     my $v = $prereq_hash->{$k};
@@ -88,7 +88,7 @@ sub setup_installer {
   $prereq_str .= "}\n\n";
 
   $content =~ s/(?=WriteMakefile\s*\()/$prereq_str/
-    or $self->log_fatal("Failed to insert conditional prereq for $os");
+    or $self->log_fatal("Failed to insert conditional prereq for m/$os/");
 
   $makefile->content($content);
 }
@@ -122,6 +122,12 @@ This [Dist::Zilla] plugin allows you to specify OS-specific prerequisites.  You
 must give the plugin a name corresponding to an operating system that would
 appear in {$^O}.  Any prerequisites listed will be conditionally added to
 {PREREQ_PM} in the Makefile.PL
+
+To exclude a prerequisite on one operating system only, you can provide a
+regular expression in place of the OS name. For example:
+
+ [OSPrereqs / ^(?!Win32)]
+ IO::Pty = 0
 
 = WARNING
 
